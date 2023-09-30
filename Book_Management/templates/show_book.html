@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  .card {
+    margin-bottom: 10px;
+  }
+</style>
+
+<div class="container mt-4">
+  {% if user.is_authenticated %}
+    <h1>Welcome, {{ user.username }}</h1>
+   <h2>View Books</h2>
+  <div class="row">
+    {% for book in books %}
+      <div class="col-md-3">
+        <div class="card" style="width: 14rem;">
+          <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*WB_UqAT-aDG0KONvvuM1Lg.png" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ book.title }}</h5>
+            <p class="card-text mb-1">Author: {{ book.author }}</p>
+            <p class="card-text mb-1">ISBN: {{ book.isbn }}</p>
+            <p class="card-text mb-1">Genre: {{ book.genre }}</p>
+            <p class="card-text mb-1">Available Copies: {{ book.number_of_copies_available }}</p>
+            {% if book.isbn not in borrowed_books %}
+              {% if book.number_of_copies_available > 0 %}
+              <a href="borrow_book/{{ book.isbn }}" class="btn btn-primary btn-sm">Borrow Book</a>
+              {% else %}
+                <a href="#" class="btn btn-danger btn-sm disabled">Out of stock</a>
+              {% endif %}
+            {% else %}
+              <a href="return_book/{{ book.isbn }}" class="btn btn-danger btn-sm">Return Book</a>
+            {% endif %}
+            {% if book.isbn not in wishlist %}
+              <a href="add_to_wishlist/{{ book.isbn }}" class="btn btn-success btn-sm">Add to Wishlist</a>
+            {% else %}
+              <a href="remove_from_wishlist/{{ book.isbn }}" class="btn btn-danger btn-sm">Remove from Wishlist</a>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+      {% if forloop.counter|divisibleby:4 %}
+        </div><div class="row">
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+    <h1>Welcome to the Library Management System.Please login to continue</h1>
+  {% endif %}
+</div>
+
+{% endblock %}

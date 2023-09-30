@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class=" mb-3 form-control">
+     {% if user.is_authenticated %}
+      <h1>Welcome, {{ user.username }}.you are already logged in.</h1>
+    {% else %}
+    <h1>Register</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+

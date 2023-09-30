@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  .card {
+    margin-bottom: 10px;
+  }
+</style>
+
+<div class="container mt-4">
+  {% if user.is_authenticated %}
+    <h1>Welcome, {{ user.username }}</h1>
+   <h2>View Wishlist ({{ length_wishlist }})</h2>
+  <div class="row">
+    {% for book in wishlist %}
+      <div class="col-md-3">
+        <div class="card" style="width: 14rem;">
+          <img src="https://th.bing.com/th/id/R.ba40f089c034cfaa0a2793613b3381bc?rik=fvY37TwjYmr7Ew&pid=ImgRaw&r=0" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ book.book.title }}</h5>
+            <p class="card-text mb-1">Author: {{ book.book.author }}</p>
+            <p class="card-text mb-1">ISBN: {{ book.book.isbn }}</p>
+            <p class="card-text mb-1">Genre: {{ book.book.genre }}</p>
+            <p class="card-text mb-1">Available Copies: {{ book.book.number_of_copies_available }}</p>
+            {% if book.book.isbn not in borrowed_books %}
+              {% if book.book.number_of_copies_available > 0 %}
+              <a href="borrow_book/{{ book.book.isbn }}" class="btn btn-primary btn-sm">Borrow Book</a>
+              {% else %}
+                <a href="#" class="btn btn-danger btn-sm disabled">Out of stock</a>
+              {% endif %}
+            {% else %}
+              <a href="return_book/{{ book.book.isbn }}" class="btn btn-danger btn-sm">Return Book</a>
+            {% endif %}
+            <a href="remove_from_wishlist/{{ book.book.isbn }}" class="btn btn-danger btn-sm">Remove from Wishlist</a>
+          </div>
+        </div>
+      </div>
+      {% if forloop.counter|divisibleby:4 %}
+        </div><div class="row">
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+    <h1>Welcome to the Library Management System.Please login to continue</h1>
+  {% endif %}
+</div>
+
+{% endblock %}
